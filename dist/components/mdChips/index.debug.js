@@ -213,18 +213,22 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 exports.default = {
   props: {
     disabled: Boolean,
-    mdDeletable: Boolean
+    mdDeletable: Boolean,
+    mdEditable: Boolean
   },
   mixins: [_mixin2.default],
   computed: {
     classes: function classes() {
       return {
         'md-deletable': this.mdDeletable,
-        'md-disabled': this.disabled
+        'md-disabled': this.disabled,
+        'md-editable': this.mdEditable
       };
     }
   }
 }; //
+//
+//
 //
 //
 //
@@ -264,6 +268,8 @@ var _uniqueId2 = _interopRequireDefault(_uniqueId);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+//
+//
 //
 //
 //
@@ -366,6 +372,17 @@ exports.default = {
       this.$emit('change', this.selectedChips);
       this.applyInputFocus();
     },
+    editChip: function editChip(chip) {
+      var index = this.selectedChips.indexOf(chip);
+
+      if (index >= 0) {
+        this.selectedChips.splice(index, 1);
+      }
+
+      this.currentChip = chip;
+      this.$emit('change', this.selectedChips);
+      this.applyInputFocus();
+    },
     deleteLastChip: function deleteLastChip() {
       if (!this.currentChip) {
         this.selectedChips.pop();
@@ -389,7 +406,7 @@ module.exports = exports['default'];
 /***/ 239:
 /***/ (function(module, exports) {
 
-module.exports = ".THEME_NAME.md-chip {\n  background-color: BACKGROUND-CONTRAST-0.12; }\n  .THEME_NAME.md-chip.md-deletable:hover, .THEME_NAME.md-chip.md-deletable:focus {\n    background-color: BACKGROUND-CONTRAST-0.54;\n    color: BACKGROUND-COLOR; }\n    .THEME_NAME.md-chip.md-deletable:hover .md-delete, .THEME_NAME.md-chip.md-deletable:focus .md-delete {\n      color: BACKGROUND-COLOR; }\n  .THEME_NAME.md-chip .md-delete {\n    color: BACKGROUND-CONTRAST-0.38; }\n    .THEME_NAME.md-chip .md-delete .md-ripple {\n      color: BACKGROUND-COLOR; }\n"
+module.exports = ".THEME_NAME.md-chip {\n  background-color: BACKGROUND-CONTRAST-0.12; }\n  .THEME_NAME.md-chip.md-deletable:hover, .THEME_NAME.md-chip.md-deletable:focus, .THEME_NAME.md-chip.md-editable:hover, .THEME_NAME.md-chip.md-editable:focus {\n    background-color: BACKGROUND-CONTRAST-0.54;\n    color: BACKGROUND-COLOR; }\n    .THEME_NAME.md-chip.md-deletable:hover .md-delete, .THEME_NAME.md-chip.md-deletable:focus .md-delete, .THEME_NAME.md-chip.md-editable:hover .md-delete, .THEME_NAME.md-chip.md-editable:focus .md-delete {\n      color: BACKGROUND-COLOR; }\n  .THEME_NAME.md-chip .md-delete {\n    color: BACKGROUND-CONTRAST-0.38; }\n    .THEME_NAME.md-chip .md-delete .md-ripple {\n      color: BACKGROUND-COLOR; }\n"
 
 /***/ }),
 
@@ -477,7 +494,14 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     attrs: {
       "tabindex": "0"
     }
-  }, [_vm._t("default"), _vm._v(" "), (_vm.mdDeletable) ? _c('md-button', {
+  }, [_c('div', {
+    staticClass: "md-chip-container",
+    on: {
+      "click": function($event) {
+        !_vm.disabled && _vm.mdEditable && _vm.$emit('edit')
+      }
+    }
+  }, [_vm._t("default")], 2), _vm._v(" "), (_vm.mdDeletable) ? _c('md-button', {
     staticClass: "md-icon-button md-dense md-delete",
     attrs: {
       "tabindex": "-1"
@@ -493,7 +517,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, [_c('md-icon', {
     staticClass: "md-icon-delete"
-  }, [_vm._v("cancel")])], 1) : _vm._e()], 2)
+  }, [_vm._v("cancel")])], 1) : _vm._e()], 1)
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
@@ -522,11 +546,15 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     return _c('md-chip', {
       attrs: {
         "md-deletable": !_vm.mdStatic,
+        "md-editable": !_vm.mdStatic,
         "disabled": _vm.disabled
       },
       on: {
         "delete": function($event) {
           _vm.deleteChip(chip)
+        },
+        "edit": function($event) {
+          _vm.editChip(chip)
         }
       }
     }, [_vm._t("default", null, {
